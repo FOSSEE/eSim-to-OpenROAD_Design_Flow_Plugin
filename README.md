@@ -1,2 +1,2 @@
 # eSim-to-OpenROAD_Design_Flow_Plugin
-eSim-to-OpenROAD Design Flow Plugin
+The eSim to OpenROAD integration, developed by FOSSEE at IIT Bombay, automates the physical design (ASIC) flow by directly connecting the eSim schematic capture and simulation GUI to the OpenROAD physical design flow. This integration removes manual steps, allowing users to move from schematic entry and simulation directly to GDSII layout generation using open-source tools.
