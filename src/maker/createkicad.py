@@ -49,7 +49,7 @@ class AutoSchematic:
                 inst_dir + '/KiCad/share/kicad/symbols/eSim_Ngveri.kicad_sym'
         else:
             self.kicad_ngveri_sym = \
-                os.path.join(self.App_obj.src_home, 'library/kicadLibrary/eSim-symbols/eSim_Ngveri.kicad_sym')
+                '/usr/share/kicad/symbols/eSim_Ngveri.kicad_sym'
         # self.parser = self.App_obj.parser_ngveri
 
     def createKicadSymbol(self):

@@ -98,7 +98,7 @@ class Maker(QtWidgets.QWidget):
     # This function is to Add new verilog file
     def addverilog(self):
 
-        init_path = '/home/adarsh_10811/eSim/'
+        init_path = '../../'
         if os.name == 'nt':
             init_path = ''
         self.verilogfile = QtCore.QDir.toNativeSeparators(
@@ -204,7 +204,7 @@ class Maker(QtWidgets.QWidget):
 
     # This is used to run the makerchip-app
     def runmakerchip(self):
-        init_path = '/home/adarsh_10811/eSim/'
+        init_path = '../../'
         if os.name == 'nt':
             init_path = ''
         try:

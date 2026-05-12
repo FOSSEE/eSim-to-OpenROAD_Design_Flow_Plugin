@@ -320,7 +320,7 @@ class NgVeri(QtWidgets.QWidget):
           This is to remove lint_off comments needed by the verilator warnings.
           This function writes to the lint_off.txt in the library/tlv folder.
         '''
-        init_path = '/home/adarsh_10811/eSim/'
+        init_path = '../../'
         if os.name == 'nt':
             init_path = ''
 
@@ -338,28 +338,21 @@ class NgVeri(QtWidgets.QWidget):
             QtWidgets.QMessageBox.Cancel)
 
         if ret == QtWidgets.QMessageBox.Ok:
-            try: 
-                file_path = os.path.join(init_path, "library/tlv/lint_off.txt")
-                with open(file_path, 'r') as file:
-                    data = file.readlines()
-                data = [line for line in data if line.strip() != text]
-                with open(file_path, 'w') as file:
-                    file.writelines(data)
-                    
-            except Exception as e:
-                QtWidgets.QMessageBox.warning(
-                    None,
-                    "Warning",
-                    f"Could not remove lint_off entry '{text}'",
-                    QtWidgets.QMessageBox.Ok
-                )
+            file = open(init_path + "library/tlv/lint_off.txt", 'r')
+            data = file.readlines()
+            file.close()
+
+            data.remove(text + "\n")
+            file = open(init_path + "library/tlv/lint_off.txt", 'w')
+            for item in data:
+                file.write(item)
 
     def add_lint_off(self):
         '''
             This is to add lint_off comments needed by the verilator warnings.
             This function writes to the lint_off.txt in the library/tlv folder.
         '''
-        init_path = '/home/adarsh_10811/eSim/'
+        init_path = '../../'
         if os.name == 'nt':
             init_path = ''
 
@@ -408,7 +401,7 @@ class NgVeri(QtWidgets.QWidget):
         self.entry_var[self.count] = QtWidgets.QComboBox()
         self.entry_var[self.count].addItem("Remove lint_off")
 
-        init_path = '/home/adarsh_10811/eSim/'
+        init_path = '../../'
         if os.name == 'nt':
             init_path = ''
         self.lint_off = open(init_path + "library/tlv/lint_off.txt", 'r')

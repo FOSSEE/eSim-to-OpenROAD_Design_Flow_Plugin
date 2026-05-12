@@ -112,7 +112,7 @@ class ModelGeneration(QtWidgets.QWidget):
         '''
             This function calls the sandpiper to convert .tlv file to .sv file
         '''
-        init_path = '/home/adarsh_10811/eSim/'
+        init_path = '../../'
         if os.name == 'nt':
             init_path = ''
         # Text="Running Sandpiper............"
@@ -836,7 +836,7 @@ and set the load for input ports */
             This function is used to run the Verilator
             using the verilator commands.
         '''
-        init_path = '/home/adarsh_10811/eSim/'
+        init_path = '../../'
         if os.name == 'nt':
             init_path = ''
 
@@ -944,7 +944,7 @@ and set the load for input ports */
             "src/xspice/icm/Ngveri/" +
                 "verilated.o"):
             os.remove(
-                self.release_home + "/src/xspice/icm/Ngveri/" + "verilated.o"
+                self.release_home + "src/xspice/icm/Ngveri/" + "verilated.o"
             )
         if os.path.exists(
             path_icm +
@@ -1062,7 +1062,7 @@ and set the load for input ports */
         '''
         print("Adding the files required by the top level module file")
 
-        init_path = '/home/adarsh_10811/eSim/'
+        init_path = '../../'
         if os.name == 'nt':
             init_path = ''
 
@@ -1239,7 +1239,7 @@ and set the load for input ports */
     #     Text += "</span>"
     #     self.termedit.append(Text+"\n")
 
-    #     init_path = '/home/adarsh_10811/eSim/'
+    #     init_path = '../../'
     #     if os.name == 'nt':
     #         init_path = ''
     #     includefile = QtCore.QDir.toNativeSeparators(\
