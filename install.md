@@ -83,7 +83,7 @@ Double-click the **eSim** desktop icon.
 # 7. Run OpenROAD GUI
 
 ```bash
-cd ~/eSim/OpenROAD-flow-scripts/flow
+cd ~/OpenROAD-flow-scripts/flow
 openroad -gui
 ```
 
@@ -120,7 +120,7 @@ This removes eSim and all installed components from the system.
 Start the OpenROAD GUI:
 
 ```bash
-cd ~/eSim/OpenROAD-flow-scripts/flow
+cd ~/OpenROAD-flow-scripts/flow
 openroad -gui
 ```
 

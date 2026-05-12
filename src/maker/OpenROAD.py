@@ -22,7 +22,7 @@ class OpenROADFlow:
         self.platform = platform
 
         self.orfs_root = os.path.expanduser(
-            "~/eSim/OpenROAD-flow-scripts"
+            "~/OpenROAD-flow-scripts"
         )
 
         self.flow_dir = os.path.join(
