@@ -1,8 +1,24 @@
+# =========================================================================
+#      FILE:     OpenROAD.py
+#
+#     USAGE: ---
+#
+#   DESCRIPTION: This file is used to connect with orfs to esim
+#
+#       OPTIONS: ---
+#  REQUIREMENTS: ---
+#          BUGS: ---
+#         NOTES: ---
+#        AUTHOR: Rishabh Jain, 2r10j5@gmail.com
+#    MAINTAINED: Sumanto Kar, sumantokar@iitb.ac.in
+#  ORGANIZATION: eSim Team at FOSSEE, IIT Bombay
+#       CREATED: Monday 2 March 2026
+# =========================================================================
+
 import os
 import shutil
 import subprocess
 import sys
-
 
 class OpenROADFlow:
 
