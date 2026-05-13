@@ -1,8 +1,6 @@
-# eSim–OpenROAD Design Flow Plugin Installation Guide
+# eSim-OpenROAD Design Flow Plugin Installation Guide
 
-**Platform:** Ubuntu 22.04
-
----
+## **Platform :** Ubuntu 22.04 LTS
 
 # 1. Clone the Repository
 
@@ -11,7 +9,6 @@ Open a terminal and run:
 ```bash
 git clone https://github.com/FOSSEE/eSim-to-OpenROAD_Design_Flow_Plugin.git
 ```
-
 ---
 
 # 2. Move to the Project Directory
@@ -22,7 +19,9 @@ cd eSim-to-OpenROAD_Design_Flow_Plugin
 
 ---
 
-# 3. Install eSim and Required Dependencies
+# 3. eSim-2.5 Installation and Uninstallation
+
+## • Install eSim and Required Dependencies
 
 Give execution permission to the installation script and run it:
 
@@ -37,9 +36,19 @@ This step installs:
 - OpenROAD dependencies
 - Required tools and libraries
 
+## • Uninstall eSim and All Components
+
+```bash
+./install-eSim.sh --uninstall
+```
+
+This removes eSim and all installed components from the system.
+
 ---
 
-# 4. Build OpenROAD Flow Scripts Locally
+# 4. Build OpenROAD Flow Scripts 
+
+## • Build orfs Locally
 
 Run the following command:
 
@@ -49,9 +58,7 @@ python3 orfs-setup.py
 
 This command builds the OpenROAD Flow Scripts required for RTL-to-GDSII generation.
 
----
-
-# 5. Rebuild OpenROAD Flow Scripts (If Build Fails)
+## • Rebuild orfs (If Build Fails)
 
 If the build process fails:
 
@@ -64,40 +71,34 @@ python3 orfs-setup.py
 
 ---
 
-# Running the Tools
+# 5. Running the Tools
 
-# 6. Run eSim
+## • Run eSim
 
-## Using Terminal
+### 1. Using Terminal
 
 ```bash
 esim
 ```
 
-## Using Desktop Shortcut
+### 2. Using Desktop Shortcut
 
 Double-click the **eSim** desktop icon.
 
----
-
-# 7. Run OpenROAD GUI
+## • Run OpenROAD GUI
 
 ```bash
 cd ~/OpenROAD-flow-scripts/flow
 openroad -gui
 ```
 
----
-
-# 8. Run Yosys
+## • Run Yosys
 
 ```bash
 yosys
 ```
 
----
-
-# 9. Run KLayout
+## • Run KLayout
 
 ```bash
 klayout
@@ -105,17 +106,7 @@ klayout
 
 ---
 
-# 10. Uninstall eSim and All Components
-
-```bash
-./install-eSim.sh --uninstall
-```
-
-This removes eSim and all installed components from the system.
-
----
-
-# Viewing Layouts in OpenROAD GUI
+# 6. Viewing Layouts in OpenROAD GUI
 
 Start the OpenROAD GUI:
 
@@ -124,9 +115,7 @@ cd ~/OpenROAD-flow-scripts/flow
 openroad -gui
 ```
 
----
-
-## View Half Adder Layout
+## • View Half Adder Layout TCL Commands
 
 ```tcl
 read_lef platforms/sky130hd/lef/sky130_fd_sc_hd.tlef
@@ -138,9 +127,7 @@ read_def results/sky130hd/Half_Adder/base/6_final.def
 gui::fit
 ```
 
----
-
-## View Full Adder Layout
+## • View Full Adder Layout TCL Commands
 
 ```tcl
 read_lef platforms/sky130hd/lef/sky130_fd_sc_hd.tlef
@@ -151,12 +138,3 @@ read_def results/sky130hd/FullAdder/base/6_final.def
 
 gui::fit
 ```
-
----
-
-# Notes
-
-- Recommended Operating System: **Ubuntu 22.04**
-- Ensure Python 3 is installed before running the setup script.
-- Internet connection is required during installation.
-- Use terminal commands carefully with proper permissions.
