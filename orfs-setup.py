@@ -1,4 +1,22 @@
 #!/usr/bin/env python3
+
+# =========================================================================
+#      FILE:     OpenROAD.py
+#
+#     USAGE: ---
+#
+#   DESCRIPTION: This file is used setup of orfs
+#
+#       OPTIONS: ---
+#  REQUIREMENTS: ---
+#          BUGS: ---
+#         NOTES: ---
+#        AUTHOR: Rishabh Jain, 2r10j5@gmail.com
+#    MAINTAINED: Sumanto Kar, sumantokar@iitb.ac.in
+#  ORGANIZATION: eSim Team at FOSSEE, IIT Bombay
+#       CREATED: Monday 2 March 2026
+# =========================================================================
+
 import os,sys,shutil,subprocess
 from pathlib import Path
 

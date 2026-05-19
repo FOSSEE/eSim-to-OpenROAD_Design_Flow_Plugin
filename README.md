@@ -24,10 +24,14 @@ This project is intended for the FOSSEE eSim ecosystem and Ubuntu-based setup wo
 | `orfs-setup.py` | OpenROAD Flow Scripts setup helper. |
 | `install.md` | Detailed installation and usage guide. |
 | `contribution.md` | Contribution guidelines. |
+| `docker-launcher/` | Docker environment and launcher scripts for running the eSim OpenROAD integration workflow. |
+
 
 ## Documentation
 
 For the full setup workflow, see [`install.md`](install.md).
+
+For the docker setup workflow, see [`docker.md`](docker-launcher/README.md)
 
 For contribution guidelines, see [`contribution.md`](contribution.md).
 
