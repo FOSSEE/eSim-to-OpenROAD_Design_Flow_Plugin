@@ -12,7 +12,7 @@
 #        AUTHOR: Rishabh Jain, 2r10j5@gmail.com
 #    MAINTAINED: Sumanto Kar, sumantokar@iitb.ac.in
 #  ORGANIZATION: eSim Team at FOSSEE, IIT Bombay
-#       CREATED: Monday 2 March 2026
+#       CREATED: Monday 27 July 2026
 # =========================================================================
 
 import os
@@ -38,7 +38,7 @@ class OpenROADFlow:
         self.platform = platform
 
         self.orfs_root = os.path.expanduser(
-            "~/OpenROAD-flow-scripts"
+            "~/eSim-to-OpenROAD_Design_Flow_Plugin/orfs/OpenROAD-flow-scripts"
         )
 
         self.flow_dir = os.path.join(
@@ -178,7 +178,7 @@ export PLACE_DENSITY = 0.40
             f"Generated Config:\n{config_file}\n"
         )
 
-    def run_flow(self):
+    def run_flow(self, line_callback=None):
 
         cmd = [
             "make",
@@ -194,7 +194,9 @@ export PLACE_DENSITY = 0.40
         )
 
         for line in process.stdout:
-
+            stripped = line.rstrip("\n")
+            if line_callback:
+                line_callback(stripped)
             print(line, end="")
 
         process.wait()

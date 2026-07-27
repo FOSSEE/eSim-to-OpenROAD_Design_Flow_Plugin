@@ -16,7 +16,7 @@
 #      MODIFIED: Rishabh Jain, 2r10j5@gmail.com
 #  ORGANIZATION: eSim Team at FOSSEE, IIT Bombay
 #       CREATED: Tuesday 24 February 2015
-#      REVISION: Wednesday 07 June 2023
+#      REVISION: Monday 27 July 2026
 # =========================================================================
 
 import os
@@ -473,175 +473,10 @@ class Application(QtWidgets.QMainWindow):
         self.obj_appconfig.print_info('Makerchip is called')
         self.obj_Mainview.obj_dockarea.makerchip()
 
-    # --- FINAL OPENROAD FUNCTION ---
     def run_openroad_flow(self):
-
-        try:
-
-            import os
-            import subprocess
-            from PyQt5 import QtWidgets
-            from maker import OpenROAD
-
-            projDir = self.obj_appconfig.current_project["ProjectName"]
-
-            if projDir is None:
-
-                QtWidgets.QMessageBox.warning(
-                    self,
-                    "No Project",
-                    "Please open or create a project first!"
-                )
-
-                return
-
-            print(f"Function : OpenROAD Flow for {projDir}")
-
-            cir_file, _ = QtWidgets.QFileDialog.getOpenFileName(
-                self,
-                "Select .cir.out File",
-                projDir,
-                "CIR OUT Files (*.cir.out)"
-            )
-
-            if not cir_file:
-
-                QtWidgets.QMessageBox.warning(
-                    self,
-                    "No File Selected",
-                    "Please select a .cir.out file."
-                )
-
-                return
-
-            if not cir_file.endswith(".cir.out"):
-
-                QtWidgets.QMessageBox.critical(
-                    self,
-                    "Wrong File",
-                    "Wrong file selected.\nPlease select a .cir.out file."
-                )
-
-                return
-
-            cir_filename = os.path.basename(cir_file)
-
-            design_name = cir_filename.replace(".cir.out", "")
-
-            print(f"\nUsing Netlist:\n{cir_file}\n")
-
-            netlist_script = os.path.join(
-                os.path.dirname(__file__),
-                "..",
-                "maker",
-                "netlist2rtl.py"
-            )
-
-            print("\n[1] Running Netlist to RTL Conversion\n")
-
-            cmd = [
-                "python3",
-                netlist_script,
-                cir_file
-            ]
-
-            process = subprocess.Popen(
-                cmd,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT,
-                text=True
-            )
-
-            for line in process.stdout:
-
-                print(line, end="")
-
-            process.wait()
-
-            if process.returncode != 0:
-
-                QtWidgets.QMessageBox.critical(
-                    self,
-                    "Conversion Error",
-                    "Netlist to RTL conversion failed."
-                )
-
-                return
-
-            verilog_file = os.path.join(
-                projDir,
-                design_name + ".v"
-            )
-
-            if not os.path.exists(verilog_file):
-
-                QtWidgets.QMessageBox.critical(
-                    self,
-                    "Verilog Missing",
-                    f"Generated Verilog not found:\n{verilog_file}"
-                )
-
-                return
-
-            print("\n[2] Generated Verilog Found\n")
-            print(verilog_file)
-
-            print("\n[3] Starting OpenROAD Flow\n")
-
-            self.or_logic = OpenROAD.OpenROADFlow(
-                design_name=design_name,
-                verilog_file=verilog_file
-            )
-
-            self.or_logic.run()
-
-            gds_file = os.path.join(
-                projDir,
-                design_name + ".gds"
-            )
-
-            if not os.path.exists(gds_file):
-
-                QtWidgets.QMessageBox.critical(
-                    self,
-                    "GDS Missing",
-                    "OpenROAD finished but GDS not found."
-                )
-
-                return
-
-            print("\n[4] Opening GDS in KLayout\n")
-
-            subprocess.Popen(["klayout", gds_file])
-
-            QtWidgets.QMessageBox.information(
-                self,
-                "Flow Completed",
-                f"GDS Generated Successfully:\n\n{gds_file}"
-            )
-
-        except ImportError as e:
-
-            print(f"Import Error: {e}")
-
-            QtWidgets.QMessageBox.critical(
-                self,
-                "Import Error",
-                str(e)
-            )
-
-        except Exception as e:
-
-            import traceback
-
-            print(traceback.format_exc())
-
-            QtWidgets.QMessageBox.critical(
-                self,
-                "OpenROAD Error",
-                str(e)
-            )
-    # ----------------------------------------
+        print("Function : OpenROAD Flow")
+        self.obj_appconfig.print_info("OpenROAD is called")
+        self.obj_Mainview.obj_dockarea.openroadEditor()
 
     def open_modelEditor(self):
         """Opens model editor."""

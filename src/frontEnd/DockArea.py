@@ -1,3 +1,22 @@
+#!/usr/bin/env python3
+
+# =========================================================================
+#      FILE:     OpenROAD.py
+#
+#     USAGE: ---
+#
+#   DESCRIPTION: This file is used setup of orfs
+#
+#       OPTIONS: ---
+#  REQUIREMENTS: ---
+#          BUGS: ---
+#         NOTES: ---
+#        AUTHOR: Rishabh Jain, 2r10j5@gmail.com
+#    MAINTAINED: Sumanto Kar, sumantokar@iitb.ac.in
+#  ORGANIZATION: eSim Team at FOSSEE, IIT Bombay
+#       CREATED: Monday 27 July 2026
+# =========================================================================
+
 from PyQt5 import QtCore, QtWidgets
 from ngspiceSimulation.pythonPlotting import plotWindow
 from ngspiceSimulation.NgspiceWidget import NgspiceWidget
@@ -17,6 +36,7 @@ from converter.ltspiceToKicad import LTspiceConverter
 from converter.LtspiceLibConverter import LTspiceLibConverter
 from converter.libConverter import PspiceLibConverter
 from converter.browseSchematic import browse_path
+from frontEnd.OpenROAD import OpenROADWidget
 dockList = ['Welcome']
 count = 1
 dock = {}
@@ -560,6 +580,56 @@ class DockArea(QtWidgets.QMainWindow):
             )
 
         count = count + 1
+
+    def openroadEditor(self):
+        projDir = self.obj_appconfig.current_project["ProjectName"]
+        if projDir is None:
+            self.msg = QtWidgets.QErrorMessage()
+            self.msg.setModal(True)
+            self.msg.setWindowTitle("Error Message")
+            self.msg.showMessage(
+                "Please select the project first."
+                " You can either create new project or open existing project"
+            )
+            self.msg.exec_()
+            return
+
+        dockName = "OpenROAD"
+
+        if dockName in dock:
+            existing = dock[dockName]
+            existing.setVisible(True)
+            existing.setFocus()
+            existing.raise_()
+            existing.show()
+            try:
+                widget = existing.findChild(OpenROADWidget)
+                if widget:
+                    widget._update_project_info()
+            except Exception:
+                pass
+            return
+
+        self.openroadWidget = QtWidgets.QWidget()
+        self.openroadLayout = QtWidgets.QVBoxLayout()
+        self.openroadLayout.setContentsMargins(0, 0, 0, 0)
+        self.openroadLayout.addWidget(OpenROADWidget())
+        self.openroadWidget.setLayout(self.openroadLayout)
+
+        dock[dockName] = QtWidgets.QDockWidget(dockName)
+        dock[dockName].setWidget(self.openroadWidget)
+        dock[dockName].setMinimumWidth(600)
+        dock[dockName].setMinimumHeight(400)
+        self.addDockWidget(QtCore.Qt.TopDockWidgetArea, dock[dockName])
+        self.tabifyDockWidget(dock["Welcome"], dock[dockName])
+
+        dock[dockName].setVisible(True)
+        dock[dockName].setFocus()
+        dock[dockName].raise_()
+
+        temp = self.obj_appconfig.current_project["ProjectName"]
+        if temp:
+            self.obj_appconfig.dock_dict[temp].append(dock[dockName])
 
     def closeDock(self):
         """

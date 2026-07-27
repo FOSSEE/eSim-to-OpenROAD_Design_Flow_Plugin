@@ -1,0 +1,21 @@
+OpenROAD 26Q3-528-g20d2d5c16e 
+Features included (+) or not (-): +GPU +GUI +Python
+This program is licensed under the BSD-3 license. See the LICENSE file for details.
+Components of this program may be licensed under more restrictive licenses which must be honored.
+[INFO ORD-0030] Using 8 thread(s).
+read_liberty /home/rj/Work/vlsi/tools/OpenROAD-flow-scripts/flow/platforms/sky130hd/lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+[INFO ODB-0227] LEF file: /home/rj/Work/vlsi/tools/OpenROAD-flow-scripts/flow/platforms/sky130hd/lef/sky130_fd_sc_hd.tlef, created 13 layers, 25 vias
+[INFO ODB-0227] LEF file: /home/rj/Work/vlsi/tools/OpenROAD-flow-scripts/flow/platforms/sky130hd/lef/sky130_fd_sc_hd_merged.lef, created 441 library cells
+link_design FullAdder
+read_sdc ./results/sky130hd/FullAdder/base/1_2_yosys.sdc
+[WARNING STA-0366] port 'clk' not found.
+source /home/rj/Work/vlsi/tools/OpenROAD-flow-scripts/flow/platforms/sky130hd/setRC.tcl
+eliminate_dead_logic
+Removed 0 unused instances and 0 unused nets.
+Design area 20 um^2 100% utilization.
+write_db ./results/sky130hd/FullAdder/base/1_synth.odb
+write_sdc -no_timestamp ./results/sky130hd/FullAdder/base/1_synth.sdc
+Elapsed time: 0:00.56[h:]min:sec. CPU time: user 0.40 sys 0.13 (93%). Peak memory: 123356KB.
+Log                       Ext     Elapsed/s Peak Memory/MB sha1sum result [0:20)
+1_synth                   .odb            0            120 3330e9c1accaa94b9330
+1_synth                   .sdc                             60d29f86c52cbf6abec1
