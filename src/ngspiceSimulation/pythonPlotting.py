@@ -1,3 +1,16 @@
+#!/usr/bin/env python3
+
+# =======================================================
+#          FILE:  PythonPlotting.py
+#
+#   DESCRIPTION:
+#
+#    MAINTAINED: Sumanto Kar, sumantokar@iitb.ac.in
+#      MODIFIED: Rishabh Jain, 2r10j5@gmail.com
+#  ORGANIZATION: eSim Team at FOSSEE, IIT Bombay
+#      REVISION: Monday 3 Aug 2026
+# =======================================================
+
 from __future__ import division  # Used for decimal division
 # eg: 2/3=0.66 and not '0' 6/2=3.0 and 6//2=3
 import os
@@ -519,8 +532,8 @@ class plotWindow(QtWidgets.QMainWindow):
                 # Adding object of multimeter to dictionary
                 (
                     self.obj_appconfig.
-                    dock_dict[
-                        self.obj_appconfig.current_project['ProjectName']].
+                    dock_dict.setdefault(
+                        self.obj_appconfig.current_project['ProjectName'], []).
                     append(self.obj[j])
                 )
 

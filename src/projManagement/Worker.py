@@ -1,5 +1,5 @@
-# =========================================================================
-#          FILE: WorkerThread.py
+# =====================================================================================
+#          FILE: Worker.py
 #
 #         USAGE: ---
 #
@@ -11,13 +11,15 @@
 #         NOTES: ---
 #        AUTHOR: Fahim Khan, fahim.elex@gmail.com
 #      MODIFIED: Rahul Paknikar, rahulp@iitb.ac.in
+#                Rishabh Jain, 2r10j5@gmail.com
 #  ORGANIZATION: eSim Team at FOSSEE, IIT Bombay
 #       CREATED: Tuesday 24 February 2015
-#      REVISION: Sunday 16 August 2020
-# =========================================================================
+#      REVISION: Monday 3 August 2026
+# =====================================================================================
 
 from PyQt5 import QtCore, QtWidgets
 import subprocess
+import shlex
 from configuration.Appconfig import Appconfig
 
 
@@ -35,6 +37,10 @@ class WorkerThread(QtCore.QThread):
     @return
         None
     """
+
+    # Emitted when the external command cannot be started so the caller can
+    # show a friendly message instead of crashing the application.
+    commandFailed = QtCore.pyqtSignal(str)
 
     def __init__(self, args):
         QtCore.QThread.__init__(self)
@@ -81,7 +87,15 @@ class WorkerThread(QtCore.QThread):
             None
         """
         print("Worker Thread Calling Command :", self.args)
-        self.call_system(self.args)
+        try:
+            self.call_system(self.args)
+        except BaseException:
+            # An exception escaping from QThread.run() would abort the whole
+            # application. Catch it here, inform the caller, and keep the
+            # application alive.
+            import traceback
+            traceback.print_exc()
+            self.commandFailed.emit(str(self.args))
 
     def call_system(self, command):
         """
@@ -111,12 +125,24 @@ class WorkerThread(QtCore.QThread):
 
             return
 
-        proc = subprocess.Popen(command.split())
+        try:
+            # shlex.split honours quotes, so command paths that contain
+            # spaces (e.g. C:\Program Files\KiCad\...) are kept intact.
+            proc = subprocess.Popen(shlex.split(command))
+        except (OSError, ValueError) as err:
+            # The executable is missing or the command is malformed. This must
+            # never take down eSim.
+            self.commandFailed.emit(
+                'Unable to run the command:\n' + command +
+                '\n\n' + str(err)
+            )
+            return
 
         if 'nghdl' in command:
             return
 
         self.my_workers.append(proc)
         procThread.procThread_list.append(proc)
-        procThread.proc_dict[procThread.current_project['ProjectName']].append(
+        procThread.proc_dict.setdefault(
+            procThread.current_project['ProjectName'], []).append(
             proc.pid)

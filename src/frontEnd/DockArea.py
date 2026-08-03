@@ -1,20 +1,14 @@
 #!/usr/bin/env python3
 
 # =========================================================================
-#      FILE:     OpenROAD.py
+#          FILE: DockArea.py
 #
-#     USAGE: ---
+#   DESCRIPTION: eSim Welcome window
 #
-#   DESCRIPTION: This file is used setup of orfs
-#
-#       OPTIONS: ---
-#  REQUIREMENTS: ---
-#          BUGS: ---
-#         NOTES: ---
-#        AUTHOR: Rishabh Jain, 2r10j5@gmail.com
 #    MAINTAINED: Sumanto Kar, sumantokar@iitb.ac.in
+#      MODIFIED: Rishabh Jain, 2r10j5@gmail.com
 #  ORGANIZATION: eSim Team at FOSSEE, IIT Bombay
-#       CREATED: Monday 27 July 2026
+#      REVISION: Monday 3 Aug 2026
 # =========================================================================
 
 from PyQt5 import QtCore, QtWidgets
@@ -106,7 +100,7 @@ class DockArea(QtWidgets.QMainWindow):
 
         temp = self.obj_appconfig.current_project['ProjectName']
         if temp:
-            self.obj_appconfig.dock_dict[temp].append(
+            self.obj_appconfig.dock_dict.setdefault(temp, []).append(
                 dock['Tips-' + str(count)]
             )
         count = count + 1
@@ -142,7 +136,7 @@ class DockArea(QtWidgets.QMainWindow):
 
         temp = self.obj_appconfig.current_project['ProjectName']
         if temp:
-            self.obj_appconfig.dock_dict[temp].append(
+            self.obj_appconfig.dock_dict.setdefault(temp, []).append(
                 dock[dockName + str(count)]
             )
         count = count + 1
@@ -183,7 +177,7 @@ class DockArea(QtWidgets.QMainWindow):
 
         temp = self.obj_appconfig.current_project['ProjectName']
         if temp:
-            self.obj_appconfig.dock_dict[temp].append(
+            self.obj_appconfig.dock_dict.setdefault(temp, []).append(
                 dock[dockName + str(count)]
             )
         count = count + 1
@@ -411,7 +405,7 @@ class DockArea(QtWidgets.QMainWindow):
 
         temp = self.obj_appconfig.current_project['ProjectName']
         if temp:
-            self.obj_appconfig.dock_dict[temp].append(
+            self.obj_appconfig.dock_dict.setdefault(temp, []).append(
                 dock[dockName + str(count)]
             )
         count = count + 1
@@ -575,7 +569,7 @@ class DockArea(QtWidgets.QMainWindow):
         ")
         temp = self.obj_appconfig.current_project['ProjectName']
         if temp:
-            self.obj_appconfig.dock_dict[temp].append(
+            self.obj_appconfig.dock_dict.setdefault(temp, []).append(
                 dock[dockName + str(count)]
             )
 
@@ -605,7 +599,11 @@ class DockArea(QtWidgets.QMainWindow):
             try:
                 widget = existing.findChild(OpenROADWidget)
                 if widget:
-                    widget._update_project_info()
+                    proj_dir = self.obj_appconfig.current_project["ProjectName"]
+                    if proj_dir and os.path.isdir(proj_dir):
+                        widget.set_project(proj_dir)
+                    else:
+                        widget._update_project_info()
             except Exception:
                 pass
             return
@@ -629,13 +627,16 @@ class DockArea(QtWidgets.QMainWindow):
 
         temp = self.obj_appconfig.current_project["ProjectName"]
         if temp:
-            self.obj_appconfig.dock_dict[temp].append(dock[dockName])
+            self.obj_appconfig.dock_dict.setdefault(temp, []).append(dock[dockName])
 
     def closeDock(self):
         """
-        This function checks for the project in **dock_dict**
-        and closes it.
+        This function closes all the dock widgets that are
+        registered in **dock_dict** and clears the bookkeeping
+        so that no stale dock remains open after a project is
+        closed or switched.
         """
-        self.temp = self.obj_appconfig.current_project['ProjectName']
-        for dockwidget in self.obj_appconfig.dock_dict[self.temp]:
-            dockwidget.close()
+        for proj_path in list(self.obj_appconfig.dock_dict.keys()):
+            for dockwidget in self.obj_appconfig.dock_dict[proj_path]:
+                dockwidget.close()
+            del self.obj_appconfig.dock_dict[proj_path]

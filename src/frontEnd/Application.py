@@ -16,13 +16,14 @@
 #      MODIFIED: Rishabh Jain, 2r10j5@gmail.com
 #  ORGANIZATION: eSim Team at FOSSEE, IIT Bombay
 #       CREATED: Tuesday 24 February 2015
-#      REVISION: Monday 27 July 2026
+#      REVISION: Monday 3 August 2026
 # =========================================================================
 
 import os
 import sys
 import traceback
 import webbrowser
+import json
 
 if os.name == 'nt':
     from frontEnd import pathmagic  # noqa:F401
@@ -320,9 +321,11 @@ class Application(QtWidgets.QMainWindow):
             directory, filelist = self.project.createProject(self.projname)
 
             if directory and filelist:
-                self.obj_Mainview.obj_projectExplorer.addTreeNode(
-                    directory, filelist
-                )
+                prev = self.obj_appconfig.current_project['ProjectName']
+                if prev and prev != directory:
+                    self._remove_project_completely(prev)
+                self.obj_Mainview.obj_projectExplorer.rebuildFromConfig()
+                self.obj_appconfig.save_current_project()
                 updated = True
 
         if not updated:
@@ -342,8 +345,49 @@ class Application(QtWidgets.QMainWindow):
         self.project = OpenProjectInfo()
         try:
             directory, filelist = self.project.body()
-            self.obj_Mainview.obj_projectExplorer.addTreeNode(
-                directory, filelist)
+            if directory and filelist:
+                prev = self.obj_appconfig.current_project['ProjectName']
+                if prev and prev != directory:
+                    self._remove_project_completely(prev)
+                self.obj_Mainview.obj_projectExplorer.rebuildFromConfig()
+                self.obj_appconfig.save_current_project()
+        except BaseException:
+            pass
+
+    def _remove_project_completely(self, path):
+        """
+        Fully remove a project from the explorer tree, the internal project
+        list, the persisted explorer file, and all cached OpenROAD state so
+        no duplicate or stale entries remain.
+        """
+        if not path:
+            return
+        # close any docks opened for this project
+        for dw in self.obj_appconfig.dock_dict.pop(path, []):
+            try:
+                dw.close()
+            except BaseException:
+                pass
+        self.obj_appconfig.proc_dict.pop(path, None)
+        self.obj_appconfig.dock_dict.pop(path, None)
+        self.obj_appconfig.project_explorer.pop(path, None)
+        if (self.obj_appconfig.current_project.get("ProjectName")
+                and os.path.normpath(
+                    self.obj_appconfig.current_project["ProjectName"])
+                == os.path.normpath(path)):
+            self.obj_appconfig.current_project["ProjectName"] = None
+        if self.obj_appconfig.get_last_project() == path:
+            settings = QtCore.QSettings("eSim", "eSim")
+            settings.setValue("last_project", "")
+            settings.sync()
+        try:
+            json.dump(
+                self.obj_appconfig.project_explorer,
+                open(self.obj_appconfig.dictPath["path"], 'w'))
+        except BaseException:
+            pass
+        try:
+            self.obj_Mainview.obj_projectExplorer.rebuildFromConfig()
         except BaseException:
             pass
 
@@ -355,17 +399,27 @@ class Application(QtWidgets.QMainWindow):
             pass
         else:
             temp = self.obj_appconfig.current_project['ProjectName']
-            for pid in self.obj_appconfig.proc_dict[temp]:
+            for pid in self.obj_appconfig.proc_dict.get(temp, []):
                 try:
                     os.kill(pid, 9)
                 except BaseException:
                     pass
             self.obj_Mainview.obj_dockarea.closeDock()
+            self._remove_project_completely(temp)
             self.obj_appconfig.current_project['ProjectName'] = None
+            self.obj_appconfig.save_current_project()
             self.systemTrayIcon.showMessage(
                 'Close', 'Current project ' +
                 os.path.basename(current_project) + ' is Closed.'
             )
+
+    def _no_project_warning(self):
+        """Show a friendly message when no project is currently open."""
+        QtWidgets.QMessageBox.warning(
+            self, "No Project",
+            "No project is currently open.\n\n"
+            "Please open or create a project first."
+        )
 
     def change_workspace(self):
         """Changes Workspace"""
@@ -476,7 +530,39 @@ class Application(QtWidgets.QMainWindow):
     def run_openroad_flow(self):
         print("Function : OpenROAD Flow")
         self.obj_appconfig.print_info("OpenROAD is called")
+        proj = self.obj_Mainview.obj_projectExplorer.getSelectedProjectPath()
+        if proj and os.path.isdir(proj):
+            self.obj_appconfig.current_project["ProjectName"] = proj
+            self.obj_appconfig.save_current_project()
+        else:
+            cur = self.obj_appconfig.current_project["ProjectName"]
+            if not (cur and os.path.isdir(cur)):
+                self._no_project_warning()
+                return
         self.obj_Mainview.obj_dockarea.openroadEditor()
+
+    def restore_last_project(self):
+        """Restore the last opened project after startup."""
+        stored = self.obj_appconfig.get_last_project()
+        if not stored:
+            return
+        # Only restore projects that are still in the user's saved project
+        # list. A project that was removed from the explorer must never be
+        # recreated here.
+        if stored not in self.obj_appconfig.project_explorer:
+            self.obj_appconfig.print_info(
+                'Skipping restore of removed project : ' + stored)
+            return
+        path = self.obj_appconfig.restore_current_project()
+        if path:
+            self.obj_appconfig.print_info('Restored project : ' + path)
+            self.obj_Mainview.obj_projectExplorer.rebuildFromConfig()
+        else:
+            QtWidgets.QMessageBox.warning(
+                self, "Project Not Found",
+                "The last opened project no longer exists:\n" + stored +
+                "\n\nPlease select or create a project."
+            )
 
     def open_modelEditor(self):
         """Opens model editor."""
@@ -589,6 +675,9 @@ def main(args):
         appView.obj_workspace.defaultWorkspace()
     else:
         appView.obj_workspace.show()
+
+    appView.restore_last_project()
+
     sys.exit(app.exec_())
 
 

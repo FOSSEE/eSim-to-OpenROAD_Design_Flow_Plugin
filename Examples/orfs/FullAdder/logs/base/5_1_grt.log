@@ -1,12 +1,12 @@
-OpenROAD 26Q3-528-g20d2d5c16e 
+OpenROAD 26Q3-771-g7cfb2105c9 
 Features included (+) or not (-): +GPU +GUI +Python
 This program is licensed under the BSD-3 license. See the LICENSE file for details.
 Components of this program may be licensed under more restrictive licenses which must be honored.
 [INFO ORD-0030] Using 8 thread(s).
-read_liberty /home/rj/Work/vlsi/tools/OpenROAD-flow-scripts/flow/platforms/sky130hd/lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+read_liberty /home/rj/eSim-to-OpenROAD_Design_Flow_Plugin/orfs/OpenROAD-flow-scripts/flow/platforms/sky130hd/lib/sky130_fd_sc_hd__tt_025C_1v80.lib
 read_db ./results/sky130hd/FullAdder/base/4_cts.odb
 read_sdc ./results/sky130hd/FullAdder/base/4_cts.sdc
-source /home/rj/Work/vlsi/tools/OpenROAD-flow-scripts/flow/platforms/sky130hd/setRC.tcl
+source /home/rj/eSim-to-OpenROAD_Design_Flow_Plugin/orfs/OpenROAD-flow-scripts/flow/platforms/sky130hd/setRC.tcl
 pin_access
 [INFO DRT-0149] Reading tech and libs.
 [WARNING DRT-0349] LEF58_ENCLOSURE with no CUTCLASS is not supported. Skipping for layer mcon
@@ -48,7 +48,7 @@ Number of nets:           10
     default via: M4M5_PR
 [INFO DRT-0162] Library cell analysis.
 [INFO DRT-0163] Instance analysis.
-[INFO DRT-0164] Number of unique instances = 4.
+[INFO DRT-0164] Number of unique instances = 5.
 [INFO DRT-0168] Init region query.
 [INFO DRT-0024]   Complete FR_MASTERSLICE.
 [INFO DRT-0024]   Complete Fr_VIA.
@@ -77,14 +77,14 @@ Number of nets:           10
 [INFO DRT-0033] via4 shape region query size = 61.
 [INFO DRT-0033] met5 shape region query size = 83.
 [INFO DRT-0165] Start pin access.
-[INFO DRT-0078]   Complete 19 pins.
-[INFO DRT-0081]   Complete 4 unique inst patterns.
-[INFO DRT-0084]   Complete 6 groups.
+[INFO DRT-0078]   Complete 25 pins.
+[INFO DRT-0081]   Complete 5 unique inst patterns.
+[INFO DRT-0084]   Complete 5 groups.
 #scanned instances     = 336
-#unique  instances     = 4
-#stdCellGenAp          = 322
+#unique  instances     = 5
+#stdCellGenAp          = 333
 #stdCellValidPlanarAp  = 13
-#stdCellValidViaAp     = 41
+#stdCellValidViaAp     = 51
 #stdCellPinNoAp        = 3
 #stdCellPinCnt         = 15
 #instTermValidViaApCnt = 0
@@ -93,8 +93,8 @@ Number of nets:           10
 #macroValidViaAp       = 0
 #macroNoAp             = 0
 [INFO DRT-0166] Complete pin access.
-[INFO DRT-0267] cpu time = 00:00:07, elapsed time = 00:00:06, memory = 125.24 (MB), peak = 124.84 (MB)
-Took 6 seconds: pin_access
+[INFO DRT-0267] cpu time = 00:00:07, elapsed time = 00:00:06, memory = 125.92 (MB), peak = 125.10 (MB)
+Took 7 seconds: pin_access
 global_route -congestion_report_file ./reports/sky130hd/FullAdder/base/congestion.rpt -congestion_iterations 30 -congestion_report_iter_step 5 -verbose
 [INFO GRT-0020] Min routing layer: met1
 [INFO GRT-0021] Max routing layer: met5
@@ -124,25 +124,25 @@ met4       Vertical         5330          4044          24.13%
 met5       Horizontal       1137           813          28.50%
 ---------------------------------------------------------------
 
-[INFO GRT-0197] Via related to pin nodes: 28
+[INFO GRT-0197] Via related to pin nodes: 24
 [INFO GRT-0198] Via related Steiner nodes: 0
 [INFO GRT-0199] Via filling finished.
-[INFO GRT-0111] Final number of vias: 39
-[INFO GRT-0112] Final usage 3D: 179
+[INFO GRT-0111] Final number of vias: 33
+[INFO GRT-0112] Final usage 3D: 158
 
 [INFO GRT-0096] Final congestion report:
 Layer         Resource        Demand        Usage (%)    Max H / Max V / Total Congestion
 ---------------------------------------------------------------------------------------
 li1                  0             0            0.00%             0 /  0 /  0
-met1             10120            16            0.16%             0 /  0 /  0
-met2              8361             4            0.05%             0 /  0 /  0
-met3              5966            42            0.70%             0 /  0 /  0
+met1             10120            47            0.46%             0 /  0 /  0
+met2              8361             2            0.02%             0 /  0 /  0
+met3              5966            10            0.17%             0 /  0 /  0
 met4              4044             0            0.00%             0 /  0 /  0
 met5               813             0            0.00%             0 /  0 /  0
 ---------------------------------------------------------------------------------------
-Total            29304            62            0.21%             0 /  0 /  0
+Total            29304            59            0.20%             0 /  0 /  0
 
-[INFO GRT-0018] Total wirelength: 545 um
+[INFO GRT-0018] Total wirelength: 503 um
 [INFO GRT-0014] Routed nets: 10
 [INFO GRT-0303] Global routing runtime = 00:00:00
 [WARNING STA-0450] virtual clock clk can not be propagated.
@@ -155,7 +155,7 @@ Iteration |   Area    | Resized | Buffers | Nets repaired | Remaining
        10 |     +0.0% |       0 |       0 |             0 |         0
     final |     +0.0% |       0 |       0 |             0 |         0
 ---------------------------------------------------------------------
-[INFO RSZ-0504] Runtime: 0.06s
+[INFO RSZ-0504] Runtime: 0.01s
 global_route -start_incremental
 detailed_placement
 [INFO DPL-0006] Core area: 25181.65 um^2
@@ -176,8 +176,8 @@ Placement Analysis
 total displacement          0.0 u
 average displacement        0.0 u
 max displacement            0.0 u
-original HPWL             449.9 u
-legalized HPWL            449.9 u
+original HPWL             429.9 u
+legalized HPWL            429.9 u
 delta HPWL                    0 %
 
 global_route -end_incremental -congestion_report_file ./reports/sky130hd/FullAdder/base/congestion_post_repair_design.rpt
@@ -186,9 +186,9 @@ estimate_parasitics -global_routing
 repair_timing -setup_margin 0 -hold_margin 0 -repair_tns 100 -verbose
 [INFO RSZ-0100] Repair move sequence: UnbufferMove SizeUpMove SwapPinsMove BufferMove CloneMove SplitLoadMove 
 [INFO RSZ-0098] No setup violations found
-[INFO RSZ-0505] Runtime: 0.10s
+[INFO RSZ-0505] Runtime: 0.09s
 [INFO RSZ-0033] No hold violations found.
-[INFO RSZ-0506] Runtime: 0.03s
+[INFO RSZ-0506] Runtime: 0.00s
 global_route -start_incremental
 detailed_placement
 [INFO DPL-0006] Core area: 25181.65 um^2
@@ -209,8 +209,8 @@ Placement Analysis
 total displacement          0.0 u
 average displacement        0.0 u
 max displacement            0.0 u
-original HPWL             449.9 u
-legalized HPWL            449.9 u
+original HPWL             429.9 u
+legalized HPWL            429.9 u
 delta HPWL                    0 %
 
 check_placement -verbose
@@ -219,8 +219,6 @@ estimate_parasitics -global_routing
 global_route -start_incremental
 global_route -end_incremental -congestion_report_file ./reports/sky130hd/FullAdder/base/congestion_post_recover_power.rpt
 Repair antennas...
-[INFO GRT-0012] Found 1 antenna violations.
-[INFO GRT-0302] Inserted 1 jumpers for 1 nets.
 [INFO GRT-0012] Found 0 antenna violations.
 [INFO ANT-0002] Found 0 net violations.
 [INFO ANT-0001] Found 0 pin violations.
@@ -238,7 +236,7 @@ Design area 483 um^2 2% utilization.
 [INFO FLW-0011] Path endpoint path count 2
 write_db ./results/sky130hd/FullAdder/base/5_1_grt.odb
 write_sdc -no_timestamp ./results/sky130hd/FullAdder/base/5_1_grt.sdc
-Elapsed time: 0:07.40[h:]min:sec. CPU time: user 8.34 sys 2.16 (141%). Peak memory: 255300KB.
+Elapsed time: 0:07.59[h:]min:sec. CPU time: user 8.53 sys 0.35 (117%). Peak memory: 255572KB.
 Log                       Ext     Elapsed/s Peak Memory/MB sha1sum result [0:20)
-5_1_grt                   .odb            7            249 b125876021421e481ddf
+5_1_grt                   .odb            7            249 9f4e1b52d4bf14f7f5ff
 5_1_grt                   .sdc                             60d29f86c52cbf6abec1

@@ -1,3 +1,16 @@
+#!/usr/bin/env python3
+
+# =======================================================
+#          FILE: NgspiceWidget.py
+#
+#   DESCRIPTION:
+#
+#    MAINTAINED: Sumanto Kar, sumantokar@iitb.ac.in
+#      MODIFIED: Rishabh Jain, 2r10j5@gmail.com
+#  ORGANIZATION: eSim Team at FOSSEE, IIT Bombay
+#      REVISION: Monday 3 Aug 2026
+# =======================================================
+
 import os
 import sys
 from PyQt5 import QtWidgets, QtCore
@@ -37,7 +50,9 @@ class NgspiceWidget(QtWidgets.QWidget):
         self.process.start('ngspice', self.args)
 
         self.obj_appconfig.process_obj.append(self.process)
-        self.obj_appconfig.proc_dict[self.obj_appconfig.current_project['ProjectName']].append(self.process.pid())
+        self.obj_appconfig.proc_dict.setdefault(
+            self.obj_appconfig.current_project['ProjectName'], []
+        ).append(self.process.pid())
 
     @QtCore.pyqtSlot()
     def readyReadAll(self):
@@ -142,6 +157,8 @@ class NgspiceWidget(QtWidgets.QWidget):
                 self.xtermProcess.start('xterm', xtermArgs)
 
                 self.obj_appconfig.process_obj.append(self.xtermProcess)
-                self.obj_appconfig.proc_dict[self.obj_appconfig.current_project['ProjectName']].append(
+                self.obj_appconfig.proc_dict.setdefault(
+                    self.obj_appconfig.current_project['ProjectName'], []
+                ).append(
                     self.xtermProcess.pid()
                 )

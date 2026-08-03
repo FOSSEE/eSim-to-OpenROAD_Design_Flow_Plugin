@@ -1,12 +1,12 @@
-OpenROAD 26Q3-528-g20d2d5c16e 
+OpenROAD 26Q3-771-g7cfb2105c9 
 Features included (+) or not (-): +GPU +GUI +Python
 This program is licensed under the BSD-3 license. See the LICENSE file for details.
 Components of this program may be licensed under more restrictive licenses which must be honored.
 [INFO ORD-0030] Using 8 thread(s).
-read_liberty /home/rj/Work/vlsi/tools/OpenROAD-flow-scripts/flow/platforms/sky130hd/lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+read_liberty /home/rj/eSim-to-OpenROAD_Design_Flow_Plugin/orfs/OpenROAD-flow-scripts/flow/platforms/sky130hd/lib/sky130_fd_sc_hd__tt_025C_1v80.lib
 read_db ./results/sky130hd/FullAdder/base/3_3_place_gp.odb
 read_sdc ./results/sky130hd/FullAdder/base/2_floorplan.sdc
-source /home/rj/Work/vlsi/tools/OpenROAD-flow-scripts/flow/platforms/sky130hd/setRC.tcl
+source /home/rj/eSim-to-OpenROAD_Design_Flow_Plugin/orfs/OpenROAD-flow-scripts/flow/platforms/sky130hd/setRC.tcl
 estimate_parasitics -placement
 Perform buffer insertion and gate resizing...
 repair_design -verbose -match_cell_footprint
@@ -28,6 +28,6 @@ Design area 483 um^2 2% utilization.
 Instance count before 336, after 336
 Pin count before 15, after 15
 write_db ./results/sky130hd/FullAdder/base/3_4_place_resized.odb
-Elapsed time: 0:00.50[h:]min:sec. CPU time: user 0.36 sys 0.13 (98%). Peak memory: 140568KB.
+Elapsed time: 0:00.46[h:]min:sec. CPU time: user 0.34 sys 0.10 (96%). Peak memory: 141228KB.
 Log                       Ext     Elapsed/s Peak Memory/MB sha1sum result [0:20)
-3_4_place_resized         .odb            0            137 f888bc3ed00aac54e8b4
+3_4_place_resized         .odb            0            137 9a069b086344625b0484
