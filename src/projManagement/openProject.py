@@ -11,9 +11,10 @@
 #         NOTES: ---
 #        AUTHOR: Fahim Khan, fahim.elex@gmail.com
 #      MODIFIED: Rahul Paknikar, rahulp@iitb.ac.in
+#                Rishabh Jian, 2r10j5@gmail.com
 #  ORGANIZATION: eSim Team at FOSSEE, IIT Bombay
 #       CREATED: Wednesday 12 February 2015
-#      REVISION: Sunday 26 July 2020
+#      REVISION: Monday 3 Aug 2026
 # =========================================================================
 
 from PyQt5 import QtWidgets, QtCore
@@ -57,19 +58,21 @@ class OpenProjectInfo(QtWidgets.QWidget):
             if os.path.isdir(self.projDir):
                 print("True")
 
-            for dirs, subdirs, filelist in os.walk(
-                    self.obj_Appconfig.current_project["ProjectName"]):
-                # directory = dirs
-                # files = filelist
-                # above 'directory' and 'files' variable never used
-                pass
-            self.obj_Appconfig.project_explorer[dirs] = filelist
+            filelist = os.listdir(self.projDir)
+            pe = self.obj_Appconfig.project_explorer
+            pe[self.projDir] = filelist
+            # remove entries that are subdirectories of the new project
+            to_del = [k for k in pe if k != self.projDir
+                      and (k.startswith(self.projDir + os.sep)
+                           or self.projDir.startswith(k + os.sep))]
+            for k in to_del:
+                pe.pop(k, None)
             json.dump(
-                self.obj_Appconfig.project_explorer, open(
+                pe, open(
                     self.obj_Appconfig.dictPath["path"], 'w'))
             self.obj_Appconfig.print_info('Open Project called')
             self.obj_Appconfig.print_info('Current Project is ' + self.projDir)
-            return dirs, filelist
+            return self.projDir, filelist
 
         else:
             self.obj_Appconfig.print_error(

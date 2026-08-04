@@ -1,4 +1,4 @@
-# =========================================================================
+# ================================================================================
 #          FILE: Appconfig.py
 #
 #         USAGE: ---
@@ -10,13 +10,14 @@
 #          BUGS: ---
 #         NOTES: ---
 #        AUTHOR: Fahim Khan, fahim.elex@gmail.com
-#      MODIFIED: Rahul Paknikar, rahulp@iitb.ac.in
+#      MODIFIED: Rahul Paknikar, rahulp@iitb.ac.in 
+#                Rishabh Jain, 2r10j5@gmai.com
 #  ORGANIZATION: eSim Team at FOSSEE, IIT Bombay
 #       CREATED: Tuesday 24 February 2015
-#      REVISION: Thursday 29 June 2023
-# =========================================================================
+#      REVISION: Monday 3 August 2026
+# ================================================================================
 
-from PyQt5 import QtWidgets
+from PyQt5 import QtCore, QtWidgets
 import os
 import json
 from configparser import ConfigParser
@@ -100,6 +101,35 @@ class Appconfig(QtWidgets.QWidget):
         self._app_ypos = 100
         self._app_width = 600
         self._app_heigth = 400
+
+    def get_last_project(self):
+        """Return the last opened project path (may no longer exist)."""
+        try:
+            settings = QtCore.QSettings("eSim", "eSim")
+            path = settings.value("last_project", "")
+            if not path:
+                return None
+            return str(path)
+        except BaseException:
+            return None
+
+    def save_current_project(self):
+        """Persist the current project path so it survives a restart."""
+        try:
+            settings = QtCore.QSettings("eSim", "eSim")
+            path = self.current_project.get("ProjectName")
+            settings.setValue("last_project", path or "")
+            settings.sync()
+        except BaseException:
+            pass
+
+    def restore_current_project(self):
+        """Restore the last project if it still exists on disk."""
+        path = self.get_last_project()
+        if path and os.path.isdir(path):
+            self.current_project["ProjectName"] = path
+            return path
+        return None
 
     def print_info(self, info):
         self.noteArea['Note'].append('[INFO]: ' + info)

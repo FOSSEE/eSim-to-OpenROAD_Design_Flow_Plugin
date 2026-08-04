@@ -1,3 +1,16 @@
+#!/usr/bin/env python3
+
+# ========================================================
+#          FILE: ProjectExplorer.py
+#
+#   DESCRIPTION: 
+#
+#    MAINTAINED: Sumanto Kar, sumantokar@iitb.ac.in
+#      MODIFIED: Rishabh Jain, 2r10j5@gmail.com
+#  ORGANIZATION: eSim Team at FOSSEE, IIT Bombay
+#      REVISION: Monday 3 Aug 2026
+# =========================================================
+
 from PyQt5 import QtCore, QtWidgets
 import os
 import json
@@ -56,6 +69,7 @@ class ProjectExplorer(QtWidgets.QWidget):
             image: url(" + init_path + "images/branch-open.png); } \
         ")
 
+        self._clean_explorer_dict()
         for parents, children in list(
                 self.obj_appconfig.project_explorer.items()):
             os.path.join(parents)
@@ -82,6 +96,53 @@ class ProjectExplorer(QtWidgets.QWidget):
                 index = self.treewidget.indexFromItem(
                     self.treewidget.topLevelItem(i))
                 self.refreshProject(indexItem=index)
+
+    def rebuildFromConfig(self):
+        try:
+            new = json.load(
+                open(self.obj_appconfig.dictPath["path"]))
+        except BaseException:
+            new = {}
+        # Update the shared (class-level) project list in place so every
+        # Appconfig instance observes the same state. Never shadow it with
+        # an instance attribute: that caused removed projects to be
+        # resurrected when another instance dumped the stale shared dict.
+        cls = type(self.obj_appconfig)
+        if 'project_explorer' in self.obj_appconfig.__dict__:
+            del self.obj_appconfig.__dict__['project_explorer']
+        shared = cls.project_explorer
+        shared.clear()
+        shared.update(new)
+        self._clean_explorer_dict()
+        self.treewidget.clear()
+        for parent, children in self.obj_appconfig.project_explorer.items():
+            if os.path.exists(parent):
+                self.addTreeNode(parent, children)
+
+    def _clean_explorer_dict(self):
+        pe = self.obj_appconfig.project_explorer
+        if not pe:
+            return
+        keys = sorted(pe.keys(), key=len)
+        to_del = []
+        for i, k1 in enumerate(keys):
+            if k1 not in pe:
+                continue
+            for k2 in keys[i + 1 :]:
+                if k2 not in pe:
+                    continue
+                if k2.startswith(k1 + os.sep):
+                    to_del.append(k2)
+                elif k1.startswith(k2 + os.sep):
+                    to_del.append(k1)
+        for k in to_del:
+            if k in pe:
+                pe.pop(k)
+        if to_del:
+            json.dump(
+                pe,
+                open(self.obj_appconfig.dictPath["path"], 'w'),
+            )
 
     def addTreeNode(self, parents, children):
         os.path.join(parents)
@@ -126,6 +187,24 @@ class ProjectExplorer(QtWidgets.QWidget):
 
         menu.exec_(self.treewidget.viewport().mapToGlobal(position))
 
+    def getSelectedProjectPath(self):
+        """
+        Return the project folder corresponding to the currently selected
+        tree item. Walks up to the top-level (project) node, so both a
+        selected project folder and a selected file inside it resolve to
+        the same project directory. Returns None if nothing is selected.
+        """
+        item = self.treewidget.currentItem()
+        if item is None:
+            return None
+        top = item
+        while top.parent() is not None:
+            top = top.parent()
+        path = top.data(1, 0)
+        if not path:
+            return None
+        return str(path)
+
     def openProject(self):
         self.indexItem = self.treewidget.currentIndex()
         filename = str(self.indexItem.data())
@@ -164,6 +243,7 @@ class ProjectExplorer(QtWidgets.QWidget):
 
             self.obj_appconfig.current_project["ProjectName"] = str(
                 self.filePath)
+            self.obj_appconfig.save_current_project()
             (
                 self.obj_appconfig.
                 proc_dict[self.obj_appconfig.current_project['ProjectName']]
@@ -207,10 +287,20 @@ class ProjectExplorer(QtWidgets.QWidget):
 
         if self.obj_appconfig.current_project["ProjectName"] == filePath:
             self.obj_appconfig.current_project["ProjectName"] = None
+            self.obj_appconfig.save_current_project()
 
-        del self.obj_appconfig.project_explorer[filePath]
+        self.obj_appconfig.project_explorer.pop(filePath, None)
         json.dump(self.obj_appconfig.project_explorer,
                   open(self.obj_appconfig.dictPath["path"], 'w'))
+
+        # Remove every cached reference to the deleted project so it can
+        # never be restored from a previous session.
+        self.obj_appconfig.proc_dict.pop(filePath, None)
+        self.obj_appconfig.dock_dict.pop(filePath, None)
+        if self.obj_appconfig.get_last_project() == filePath:
+            settings = QtCore.QSettings("eSim", "eSim")
+            settings.setValue("last_project", "")
+            settings.sync()
 
     def refreshProject(self, filePath=None, indexItem=None):
         """
